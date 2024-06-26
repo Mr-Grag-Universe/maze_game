@@ -89,7 +89,7 @@ class GameField:
         cells = []
         rows = self._cells[position.y:position.y+len(mask)]
         for cell_line, mask_line in zip(rows, mask):
-            for cell, take in zip(cell_line, mask_line):
+            for cell, take in zip(cell_line[position.x:], mask_line):
                 if take:
                     cells.append(cell)
         
@@ -97,5 +97,9 @@ class GameField:
     
     def set_obj_on_field(self, obj : GameObject) -> None:
         cells = self.get_hitbox_cells(obj.position, obj.hitbox.mask())
+        for cell in cells:
+            if not cell.passable():
+                print(cells, obj)
+                raise RuntimeError("cannot set this object on such place. it's not passable!")
         for cell in cells:
             cell.add_obj(obj)

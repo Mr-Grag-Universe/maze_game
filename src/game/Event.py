@@ -5,3 +5,6 @@ class GameEvent:
         self.event = event
         self.args = args
         self.kwargs = kwargs
+
+    def __repr__(self) -> str:
+        return f"GameEvent<id={id(self)}, event={self.event}>"

@@ -8,14 +8,21 @@ class Cell:
         return f"Cell<id={id(self)}, objects={self.objects!r}>"
 
     def add_obj(self, obj) -> None:
-        assert obj not in self.objects, RuntimeError(f"object {obj} already added in cell")
+        if str(id(obj)) in self.objects:
+            raise RuntimeError(f"object {obj} already added in cell")
         self.objects[id(obj)] = obj
-        obj.subscribe(self)
+        obj.cell_subscribe(self)
+
+    def del_obj(self, obj) -> None:
+        if str(id(obj)) not in self.objects:
+            raise RuntimeError(f"object {obj} already added in cell")
+        self.objects.pop(str(id(obj)))
+        obj.cell_unsubscribe(self)
 
     def update(self, obj, signal : Literal["DEL", "ADD"], *args, **kwargs):
         match signal:
             case "DEL":
-                self.objects.pop(id(obj))
+                self.del_obj(obj)
             case "ADD":
                 self.add_obj(obj)
 
@@ -25,3 +32,7 @@ class Cell:
 
     def can_stay_here(self):
         return all(obj.passability for obj in self.objects)
+
+    def passable(self) -> bool:
+        print("objs: ", self.objects)
+        return all(obj.passability for obj in self.objects.values())

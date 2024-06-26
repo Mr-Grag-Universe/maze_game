@@ -9,5 +9,8 @@ class Wall(GameObject):
         self.hitbox = HitBox('#')
         self.asset = Asset("#", "Wall")
 
+        self.passability = False
+        self.intelligent = False
+
     def render(self, mode : GameMode = "CONSOLE", frame : Frame = None):
         frame.render(self.asset, self.position, mode)

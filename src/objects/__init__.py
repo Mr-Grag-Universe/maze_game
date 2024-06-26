@@ -1,4 +1,4 @@
-from .Object import GameObject
+from .Object import GameObject, GameObjectIntelligent
 from .ObjFabric import ObjFabric
 
 from .Wall import Wall

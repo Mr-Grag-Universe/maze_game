@@ -21,6 +21,7 @@ if __name__ == "__main__":
         if mode == "PYGAME":
             frame.attach_screen(screen)
             frame.set_cell_size(64)
+            screen.fill((0, 0, 0))
         game.render(frame=frame)
         frame.show()
 
@@ -29,6 +30,10 @@ if __name__ == "__main__":
                 if event.type == pygame.QUIT:
                         STOP_GAME = True
             pygame.display.flip()
+
+        asks = game.ask_intelligent()
+        print(asks)
+        game.process_events(asks)
 
         if STOP_GAME:
             break

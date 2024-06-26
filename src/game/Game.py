@@ -1,11 +1,13 @@
 from typing import Literal, TypeAlias
 from . import GameField
-from ..objects import GameObject, ObjFabric
+from .Event import GameEvent
+from ..objects import GameObject, GameObjectIntelligent, ObjFabric
 from ..game_types import GameMode
 
 class Game:
     def __init__(self, field_size : tuple[int, int] = (10, 10), mode : GameMode = "CONSOLE"):
-        self.objects : list[GameObject] = []
+        self.objects : dict[str, GameObject] = {}
+        self.intelligent_objects : dict[str, GameObjectIntelligent] = {}
         self.field = GameField(*field_size)
         self._mode = mode
     
@@ -18,7 +20,7 @@ class Game:
 
     def collect_render_objs(self) -> list[GameObject]:
         on_filed_objs = []
-        for obj in self.objects:
+        for obj in self.objects.values():
             # если хоть кусочек hitbox попадает на поле - берём
             if obj.on_field():
                 on_filed_objs += [obj]
@@ -29,8 +31,14 @@ class Game:
         for obj in objs:
             obj.render(mode=self._mode, **kwargs)
 
-    def add_object(self, obj : GameObject) -> None:
-        self.objects.append(obj)
+    def add_object(self, obj : GameObject, tag : str | None = None) -> None:
+        if tag is None:
+            tag = str(id(obj))
+        if tag in self.objects.keys():
+            raise ValueError("such object already exists in this game")
+        self.objects[tag] = obj
+        if obj.intelligent:
+            self.intelligent_objects[tag] = obj
 
     def fast_map_config(self, file_name : str) -> None:
         str_map : list[str]
@@ -47,6 +55,53 @@ class Game:
                 if symbol != ' ':
                     obj = ObjFabric.create_from_symbol(symbol)
                     obj.position = {'x' : j, 'y' : i}
-                    self.objects.append(obj)
-                    self.field.set_obj_on_field(obj)
                     
+                    self.objects[str(id(obj))] = obj
+                    if obj.intelligent:
+                        self.intelligent_objects[str(id(obj))] = obj
+
+                    print("obj_pos: ", i, j)
+                    print(self.field._cells)
+                    self.field.set_obj_on_field(obj)
+
+    def ask_intelligent(self) -> list[GameEvent]:
+        asks = []
+        for obj in self.intelligent_objects.values():
+            ask : list[GameEvent] | None = obj.ask(self)
+            if ask is not None:
+                asks.extend(ask)
+        
+        return asks
+    
+    def _process_event(self, event : GameEvent) -> bool:
+        match event.event:
+            case "MOVE":
+                obj = self.intelligent_objects[event.kwargs['id']]
+                direction = event.kwargs['direction']
+                r = [0, 0]
+                match direction:
+                    case "UP":
+                        r = [0, -1]
+                    case "DOWN":
+                        r = [0, 1]
+                    case "RIGHT":
+                        r = [1, 0]
+                    case "LEFT":
+                        r = [-1, 0]
+                    case _:
+                        raise ValueError(f"cannot move this way: {direction}")
+                try:
+                    print(f"moving from {obj.position} to {direction} rel")
+                    obj.move(self.field, r, rel=True)
+                    return True
+                except RuntimeError as exc:
+                    return False
+            case _:
+                raise ValueError(f"uknown event processing: {event.event}")
+
+    def process_events(self, events : list[GameEvent]) -> None:
+        for event in events:
+            if not self._process_event(event):
+                print("cannot run this commond successfully")
+            else:
+                print("success!")
