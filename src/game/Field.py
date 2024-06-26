@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 from . import Cell
 from ..objects import GameObject, ObjFabric
-from ..types import Position
+from ..game_types import Position
 
 # логгер модуля
 logger = logging.getLogger(__name__)

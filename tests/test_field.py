@@ -2,7 +2,7 @@ import pytest
 import logging
 import decorator
 from src.game import GameField as Field
-from src.types import Position
+from src.game_types import Position
 
 def disable_logging(func):
     def wrapper(func, *args, **kwargs):

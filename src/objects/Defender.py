@@ -1,5 +1,5 @@
 from . import GameObject
-from ..types import Position, GameMode
+from ..game_types import Position, GameMode
 from ..graphics import Asset, Frame
 from ..physics import HitBox
 

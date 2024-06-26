@@ -1,7 +1,7 @@
 from typing import Literal, TypeAlias
 from . import GameField
 from ..objects import GameObject, ObjFabric
-from ..types import GameMode
+from ..game_types import GameMode
 
 class Game:
     def __init__(self, field_size : tuple[int, int] = (10, 10), mode : GameMode = "CONSOLE"):

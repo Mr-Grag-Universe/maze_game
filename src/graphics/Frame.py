@@ -1,7 +1,7 @@
 import os
 import pygame
 from . import Asset
-from ..types import GameMode, Position
+from ..game_types import GameMode, Position
 
 class Frame:
     def __init__(self, field_size) -> None:

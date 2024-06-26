@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Literal
 
 from ..physics import HitBox
-from ..types import Position, GameMode
+from ..game_types import Position, GameMode
 
 class GameObject:
     def __init__(self, position : tuple[int, int] | Position = (0, 0)):
