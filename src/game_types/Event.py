@@ -1,4 +1,4 @@
-from ..game_types import EventType
+from . import EventType
 
 class GameEvent:
     def __init__(self, event : EventType, *args, **kwargs) -> None:

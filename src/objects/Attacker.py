@@ -1,9 +1,9 @@
 from typing import TypeVar
 from . import GameObject
-from ..game_types import Position, GameMode
+from ..game_types import Position, GameMode, GameEvent
 from ..graphics import Asset, Frame
 from ..physics import HitBox
-from ..game.Event import GameEvent
+from ..strategy.Brain import Brain, SimpleNNBrain
 
 Game = TypeVar("Game")
 
@@ -12,12 +12,18 @@ class Attacker(GameObject):
         super().__init__(position)
         self.hitbox = HitBox('@')
         self.asset = Asset("@", "Attacker")
+        self._brain : Brain = None
 
         self.passability = False
         self.intelligent = True
+
+    def set_brain(self, brain) -> None:
+        self._brain = brain
+        print("brain setting: ", brain)
 
     def render(self, mode : GameMode = "CONSOLE", frame : Frame = None):
         frame.render(self.asset, self.position, mode)
         
     def ask(self, game : Game) -> list[GameEvent] | None:
-        return [GameEvent("MOVE", direction="UP", id=str(id(self)), speed=1.0)]
+        direction = self._brain.chose_move_direction([1, 1, 1, 1])
+        return [GameEvent("MOVE", direction=direction, id=str(id(self)), speed=1.0)]

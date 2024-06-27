@@ -1,9 +1,8 @@
 from typing import TypeVar
 from . import GameObject
-from ..game_types import Position, GameMode
+from ..game_types import Position, GameEvent, GameMode
 from ..graphics import Asset, Frame
 from ..physics import HitBox
-from ..game.Event import GameEvent
 
 Game = TypeVar("Game")
 

@@ -4,6 +4,7 @@ from typing import Literal, TypeVar
 from ..physics import HitBox
 from ..game_types import Position, GameMode
 
+# по существу
 Game = TypeVar("Game")
 GameEvent = TypeVar("GameEvent")
 

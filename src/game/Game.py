@@ -1,15 +1,21 @@
 from typing import Literal, TypeAlias
+from pydantic import BaseModel, Field, validate_call
 from . import GameField
-from .Event import GameEvent
 from ..objects import GameObject, GameObjectIntelligent, ObjFabric
-from ..game_types import GameMode
+from ..game_types import GameEvent, GameMode
 
 class Game:
-    def __init__(self, field_size : tuple[int, int] = (10, 10), mode : GameMode = "CONSOLE"):
+    objects : dict[str, GameObject]
+    intelligent_objects : dict[str, GameObjectIntelligent]
+    field : GameField
+    _mode : GameMode
+
+    @validate_call
+    def __init__(self, field_size : tuple[int, int] = (10, 10), mode : GameMode = "CONSOLE") -> None:
         self.objects : dict[str, GameObject] = {}
         self.intelligent_objects : dict[str, GameObjectIntelligent] = {}
         self.field = GameField(*field_size)
-        self._mode = mode
+        self._mode : GameMode = mode
     
     @property
     def mode(self) -> GameMode:
@@ -34,12 +40,13 @@ class Game:
     def add_object(self, obj : GameObject, tag : str | None = None) -> None:
         if tag is None:
             tag = str(id(obj))
-        if tag in self.objects.keys():
+        if tag in self.objects:
             raise ValueError("such object already exists in this game")
         self.objects[tag] = obj
         if obj.intelligent:
             self.intelligent_objects[tag] = obj
 
+    @validate_call
     def fast_map_config(self, file_name : str) -> None:
         str_map : list[str]
         with open(file_name, "r") as file:
@@ -64,6 +71,7 @@ class Game:
                     print(self.field._cells)
                     self.field.set_obj_on_field(obj)
 
+    @validate_call
     def ask_intelligent(self) -> list[GameEvent]:
         asks = []
         for obj in self.intelligent_objects.values():
