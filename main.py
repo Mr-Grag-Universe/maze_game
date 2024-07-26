@@ -3,11 +3,23 @@ import pygame
 import sys
 from src.game import Game
 from src.graphics import Frame
+from src.strategy.Brain import SimpleNNBrain
 
 if __name__ == "__main__":
     mode = sys.argv[1]
     game = Game(field_size=(10, 10), mode=mode)
     game.fast_map_config("configs/map.txt")
+
+    brain = SimpleNNBrain()
+    # brain.set_weights(weights)
+
+    for obj in game.intelligent_objects.values():
+        print("obj for braining: ", obj)
+        try:
+            obj.set_brain(brain)
+            print("brain setted")
+        except Exception as exc:
+            print(exc)
 
     if mode == "PYGAME":
         pygame.init()
@@ -15,7 +27,7 @@ if __name__ == "__main__":
 
     STOP_GAME = False
     for i in range(100):
-        # sleep(0.5)
+        sleep(0.5)
 
         frame = Frame((10, 10))
         if mode == "PYGAME":
