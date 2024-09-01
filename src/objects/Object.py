@@ -42,7 +42,8 @@ class GameObject:
         self.cells.pop(id(cell))
     
     def cell_unsubscribe_all(self):
-        for cell in self.cells.values():
+        cells = list(self.cells.values())
+        for cell in cells:
             self.cell_unsubscribe(cell)
 
     def game_subscribe(self, game : Game):
@@ -60,20 +61,33 @@ class GameObject:
         cells = field.get_hitbox_cells(new_position, self.hitbox.mask())
         for cell in cells:
             if not cell.passable():
+                print("cell is not passible")
+                print(f'{cell=}')
                 raise RuntimeError("cannot set this object on such place. it's not passable!")
-        self.cell_unsubscribe_all()
+        
+        # стираем где мы были
+        old_cells = field.get_hitbox_cells(self.position, self.hitbox.mask())
+        print("cells for deleting: ", old_cells)
+        for cell in old_cells:
+            cell.update(self, "DEL")
+
+        cells = field.get_hitbox_cells(new_position, self.hitbox.mask())
+        print("cells for addition: ", cells)
+        # записываем, где мы теперь
         for cell in cells:
-            self.cell_subscribe(cell)
+            # self.cell_subscribe(cell)
+            cell.update(self, "ADD")
+        
         self._position = new_position
-        print("adding objs")
-        for cell in self.cells.values():
-            cell.add_obj(self)
 
     def on_field(self) -> bool:
         return len(self.cells) != 0
 
     def render(self, mode : GameMode = "CONSOLE", frame=None):
         raise NotImplementedError("You cannot render GameObject class!")
+    
+    def __repr__(self):
+        return f'{type(self)}<id={id(self)}>'
 
 class GameObjectIntelligent(GameObject):
     def ask(self, game : Game) -> list[GameEvent] | None:

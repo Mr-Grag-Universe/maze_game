@@ -8,14 +8,16 @@ class Cell:
         return f"Cell<id={id(self)}, objects={self.objects!r}>"
 
     def add_obj(self, obj) -> None:
+        print(self.objects, id(obj))
         if str(id(obj)) in self.objects:
             raise RuntimeError(f"object {obj} already added in cell")
-        self.objects[id(obj)] = obj
+        self.objects[str(id(obj))] = obj
         obj.cell_subscribe(self)
 
     def del_obj(self, obj) -> None:
+        print(self.objects, id(obj))
         if str(id(obj)) not in self.objects:
-            raise RuntimeError(f"object {obj} already added in cell")
+            raise RuntimeError(f"object {obj} already deleted from cell")
         self.objects.pop(str(id(obj)))
         obj.cell_unsubscribe(self)
 

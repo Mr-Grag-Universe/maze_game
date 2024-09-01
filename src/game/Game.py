@@ -67,13 +67,14 @@ class Game:
                     if obj.intelligent:
                         self.intelligent_objects[str(id(obj))] = obj
 
-                    print("obj_pos: ", i, j)
-                    print(self.field._cells)
+                    # print("obj_pos: ", i, j)
+                    # print(self.field._cells)
                     self.field.set_obj_on_field(obj)
 
     @validate_call
     def ask_intelligent(self) -> list[GameEvent]:
         asks = []
+        # можно просто проверять наличие метода и флажка, а не хранить массив разумных объектов
         for obj in self.intelligent_objects.values():
             ask : list[GameEvent] | None = obj.ask(self)
             if ask is not None:
@@ -103,6 +104,7 @@ class Game:
                     obj.move(self.field, r, rel=True)
                     return True
                 except RuntimeError as exc:
+                    # raise exc
                     return False
             case _:
                 raise ValueError(f"uknown event processing: {event.event}")

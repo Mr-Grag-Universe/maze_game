@@ -85,7 +85,9 @@ class GameField:
         возвращает клетки, реально занимаемые объектом, стоящем на координатах position 
         и с хитбоксом формы mask
         '''
-        assert len(mask) and max(len(line) for line in mask), RuntimeError("mask size is wrong")
+        if not (len(mask) and max(len(line) for line in mask)):
+            print("!!!get_hitbox_cells!!!")
+            raise RuntimeError("mask size is wrong")
         cells = []
         rows = self._cells[position.y:position.y+len(mask)]
         for cell_line, mask_line in zip(rows, mask):
@@ -97,6 +99,7 @@ class GameField:
     
     def set_obj_on_field(self, obj : GameObject) -> None:
         cells = self.get_hitbox_cells(obj.position, obj.hitbox.mask())
+        # проверяем на коллизии
         for cell in cells:
             if not cell.passable():
                 print(cells, obj)

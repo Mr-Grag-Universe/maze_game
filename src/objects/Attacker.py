@@ -25,5 +25,7 @@ class Attacker(GameObject):
         frame.render(self.asset, self.position, mode)
         
     def ask(self, game : Game) -> list[GameEvent] | None:
-        direction = self._brain.chose_move_direction([1, 1, 1, 1])
+        direction = self._brain.chose_move_direction(self, game)
+        if direction is None:
+            return []
         return [GameEvent("MOVE", direction=direction, id=str(id(self)), speed=1.0)]

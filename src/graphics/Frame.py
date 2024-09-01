@@ -15,10 +15,17 @@ class Frame:
     def set_cell_size(self, size=8) -> None:
         self.cell_size = size
 
-    def show(self):
-        os.system('cls')
-        for line in self.map:
-            print(''.join(line))
+    def show(self, mode):
+        print("show")
+        # os.system('cls')
+        match mode:
+            case "CONSOLE":
+                for line in self.map:
+                    print(''.join(line))
+            case "PYGAME":
+                pass
+            case _:
+                raise RuntimeError(f"There is not such <{mode}> mode!")
 
     def render(self, asset : Asset, position : Position, mode : GameMode = "CONSOLE"):
         match mode:

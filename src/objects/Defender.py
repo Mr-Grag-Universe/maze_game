@@ -19,4 +19,4 @@ class Defender(GameObject):
         frame.render(self.asset, self.position, mode)
 
     def ask(self, game : Game) -> list[GameEvent] | None:
-        return [GameEvent("MOVE", direction="DOWN", id=str(id(self)), speed=1.0)]
+        return [GameEvent("MOVE", direction="UP", id=str(id(self)), speed=1.0)]
