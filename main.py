@@ -23,17 +23,19 @@ if __name__ == "__main__":
 
     if mode == "PYGAME":
         pygame.init()
-        screen = pygame.display.set_mode((11*64, 12*64))
+        screen = pygame.display.set_mode((11*64, 12*64), vsync=True)
 
     STOP_GAME = False
     for i in range(100):
-        sleep(0.1)
+        sleep(0.5)
 
         frame = Frame((11, 12))
         if mode == "PYGAME":
             frame.attach_screen(screen)
             frame.set_cell_size(64)
-            screen.fill((0, 0, 0))
+            background = pygame.Surface(screen.get_size())
+            background.fill((0, 0, 0))
+            screen.blit(background, (0, 0))
         game.render(frame=frame)
         frame.show(mode)
 
