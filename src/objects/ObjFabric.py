@@ -3,6 +3,7 @@ from .Attacker import Attacker
 from .Wall import Wall
 from .Defender import Defender
 from .Bush import Bush
+from .Hero import Hero
 from ..strategy.Brain import KeeperBrain
 
 class ObjFabric:
@@ -19,5 +20,7 @@ class ObjFabric:
                 return Defender()
             case "b":
                 return Bush()
+            case "h":
+                return Hero()
             case _:
                 return NotImplementedError("We does not recognise such symbol-object type")

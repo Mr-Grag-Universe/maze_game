@@ -6,11 +6,11 @@ from ..physics import HitBox
 
 Game = TypeVar("Game")
 
-class Defender(GameObject):
+class Hero(GameObject):
     def __init__(self, position: tuple[int, int] | Position | dict = {'x' : 0, 'y' : 0}):
         super().__init__(position)
         self.hitbox = HitBox('*')
-        self.asset = Asset("&", "Defender")
+        self.asset = Asset("h", "Defender")
         
         self.passability = False
         self.intelligent = True
@@ -19,4 +19,4 @@ class Defender(GameObject):
         frame.render(self.asset, self.position, mode)
 
     def ask(self, game : Game) -> list[GameEvent] | None:
-        return [GameEvent("MOVE", direction="UP", id=str(id(self)), speed=1.0)]
+        return None

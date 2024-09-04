@@ -39,16 +39,12 @@ if __name__ == "__main__":
         game.render(frame=frame)
         frame.show(mode)
 
-
-        asks = game.ask_intelligent()
-        print(f'{asks=}')
-        game.process_events(asks)
+        STOP_GAME = game.process_events()
 
         if mode == "PYGAME":
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                        STOP_GAME = True
             pygame.display.flip()
 
         if STOP_GAME:
+            if mode == 'PYGAME':
+                pygame.quit()
             break
